@@ -1,12 +1,12 @@
 # Experimental Compiler
 
-This is an experimental compiler written in C++. The purpose of this project is to explore the basics of compiler design and gain a better understanding of how programming languages are parsed and translated into machine code.
+I built this C++ learning project to understand what happens between a small source program and generated assembly. It parses a language with integer variables and functions, prints the syntax tree, and writes an experimental assembly output to `code.S`.
 
 ## Status
 
-**Work in Progress**
+**Learning prototype with incomplete language and code generation support.**
 
-This project is still under development, and there's quite a lot to finish. Some of the planned features are yet to be implemented, and there might be known issues that need to be addressed.
+The implemented backend emits x86-64 AT&T assembly using the Microsoft Windows calling convention. ARM and general cross-platform executable generation are not implemented. The code contains unfinished cases, so generated output should be inspected rather than assumed correct.
 
 ## Features and Plans
 
@@ -15,36 +15,57 @@ This project is still under development, and there's quite a lot to finish. Some
 - [ ] Semantic Analysis: Checking for semantic correctness and building a symbol table.
 - [ ] Intermediate Code Generation: Converting the AST into intermediate code.
 - [ ] Optimization: Implementing basic optimizations on the intermediate code.
-- [X] Code Generation: Translating the optimized intermediate code into target machine code (x86, ARM, etc.).
+- [X] Experimental code generation: emitting Windows x86-64 AT&T assembly directly from parsed structures.
 
 ## Getting Started
 
 ### Prerequisites
 
-- C++ compiler (supporting C++11 or higher)
-- CMake (for building the project)
+- A C++14-capable compiler and CMake 3.14 or newer.
+- Windows/MinGW assembler and linker tools if you want to investigate the generated assembly.
 
 ### Building the Compiler
 
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/MukhtarovEldar/Experimental-Compiler.git
+   git clone https://github.com/eldarmuk/Experimental-Compiler.git
    cd Experimental-Compiler
+   ```
 
 2. Build the project using CMake:
 
     ```bash
-    cmake -B build 
+    cmake -S . -B build -DCMAKE_CXX_STANDARD=14
     cmake --build build
+    ```
 
-3. To build generated x86_64 ASM
+   The explicit standard flag avoids relying on the incomplete standard-setting line in the current CMake file. The executable target is named `func`; its location varies by CMake generator (`build/func`, `build/func.exe` or `build/Debug/func.exe`).
+
+3. Run it with the supplied example, adjusting the executable path for your build:
+
+    ```sh
+    ./build/func example.txt
+    ```
+
+   `example.txt` includes declarations such as `a : integer = 69`, reassignment with `a := 420`, a function declaration and `foo(20, 34)`. The driver prints the parsed tree and writes `code.S` in the working directory. It returns 1 for a parsing error and 2 for a code-generation error.
+
+   See [`src/parser.cpp`](src/parser.cpp), [`src/environment.cpp`](src/environment.cpp) and [`src/codegen.cpp`](src/codegen.cpp) for the implementation.
+
+4. To investigate the generated x86-64 assembly:
 
     On Windows under MinGW:
 
     ```bash
     as code.S -o code.o
-    ld code.o -o code.exe && code.exe
+    ld code.o -o code.exe
+    ```
+
+   These are the original MinGW-oriented assembly steps, not a guarantee that every generated program links or runs correctly. There is no automated test suite in this repository, and the compiler was not rebuilt during this documentation update.
+
+### Known boundaries
+
+Function argument generation assumes integer values in several places; stack arguments and other expression cases contain TODOs. The example's proposed lambda syntax is also unimplemented. A complete semantic-analysis pass, intermediate representation and optimizer remain outside the demonstrated scope.
 
 ### Contributing
 
