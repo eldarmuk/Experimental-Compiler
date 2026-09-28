@@ -1,5 +1,16 @@
 # Experimental Compiler
 
+I built this to understand what happens between a small source program and assembly. It parses variables and functions, prints a syntax tree, and writes experimental Windows x86-64 assembly.
+
+C++ · Parsing · Code generation
+
+An incomplete learning prototype. Inspired by [Intercept](https://github.com/LensPlaysGames/Intercept).
+
+<details>
+<summary>Setup and technical notes</summary>
+
+# Experimental Compiler
+
 I built this C++ learning project to understand what happens between a small source program and generated assembly. It parses a language with integer variables and functions, prints the syntax tree, and writes an experimental assembly output to `code.S`.
 
 ## Status
@@ -78,3 +89,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Resources
 
 This project was inspired by the following repository: [Intercept](https://github.com/LensPlaysGames/Intercept.git). I am writing this compiler in C++ with insights and ideas drawn from that repository.
+
+</details>
